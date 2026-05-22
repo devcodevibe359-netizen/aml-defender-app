@@ -37,6 +37,7 @@ export async function action({ request }: ActionFunctionArgs) {
       JSON.stringify({
         success: true,
         qrUrl: qrImage,
+        dd:body,
         token,
         redirectUrl: kycUrl,
       }),
