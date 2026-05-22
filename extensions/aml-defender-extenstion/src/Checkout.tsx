@@ -7,6 +7,7 @@ function Extension() {
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [content, setContent] = useState<string | null>(null);
 
                   
 
@@ -19,6 +20,7 @@ function Extension() {
         const data = await QRgenerated({ token  });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
+        setContent(data.dd);
       } catch (err) {
         console.error(err);
         setError('Failed to load QR code. Please try again.');
@@ -31,6 +33,11 @@ function Extension() {
 
   return (
     <s-section heading="Identity Verification Required">
+      {content && (
+        <s-text>
+          {content}
+        </s-text>
+      )}
 
       {/* ── Warning Banner — full width ── */}
       <s-grid gridTemplateColumns="repeat(12, 1fr)" gap="small">
