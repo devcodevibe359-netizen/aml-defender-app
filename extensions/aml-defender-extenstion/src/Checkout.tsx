@@ -7,6 +7,7 @@ function Extension() {
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
                   
 
   useEffect(() => {
@@ -15,7 +16,9 @@ function Extension() {
         setLoading(true);
         setError(null);
         const token = await shopify.sessionToken.get();
-        const data = await QRgenerated({ token });
+        const number =  shopify.orderConfirmation.value?.number;
+        console.log("hjdasfhjads",number);
+        const data = await QRgenerated({ token , number });
         setQrUrl(data.qrUrl);
       } catch (err) {
         console.error(err);
