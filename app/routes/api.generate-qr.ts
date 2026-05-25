@@ -20,7 +20,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 type QRRequestBody = {
   orderId?: string;
-  customerId?: string;
+  orderDetails?: string | null;
 };
 
 export async function action({ request }: ActionFunctionArgs) {

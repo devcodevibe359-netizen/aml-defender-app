@@ -17,10 +17,13 @@ function Extension() {
         setLoading(true);
         setError(null);
         const token = await shopify.sessionToken.get();
-        const data = await QRgenerated({ token  });
+        //const orderId = shopify.orderConfirmation.value?.id ?? null;
+        const orderNumber = shopify.orderConfirmation.value?.number ?? null;
+
+        const data = await QRgenerated({ token , orderNumber });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
-        setContent(data.dd);
+        setContent(data.dd); 
       } catch (err) {
         console.error(err);
         setError('Failed to load QR code. Please try again.');
