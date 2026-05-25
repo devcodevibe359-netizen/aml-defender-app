@@ -23,7 +23,7 @@ function Extension() {
         const data = await QRgenerated({ token , orderNumber });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
-        setContent(data.dd); 
+        setContent(data); 
       } catch (err) {
         console.error(err);
         setError('Failed to load QR code. Please try again.');
@@ -38,7 +38,7 @@ function Extension() {
     <s-section heading="Identity Verification Required">
       {content && (
         <s-text>
-          {content}
+          {content} asdbhabdhbhjs
         </s-text>
       )}
 
