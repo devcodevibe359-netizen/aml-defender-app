@@ -25,142 +25,294 @@ export default function KycDashboard() {
   return (
     <s-page heading="KYC Verifications">
 
-      <s-section>
-        <s-box borderWidth="base" borderRadius="base" overflow="hidden">
+      {/* Primary Action */}
+      <s-button
+        slot="primary-action"
+        variant="primary"
+      >
+        Create Verification
+      </s-button>
 
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-            }}
+      {/* Secondary Actions */}
+      <s-button
+        slot="secondary-actions"
+        variant="secondary"
+      >
+        Export CSV
+      </s-button>
+
+      <s-button
+        slot="secondary-actions"
+        variant="secondary"
+      >
+        Sync Orders
+      </s-button>
+
+      {/* ========================= */}
+      {/* Empty State */}
+      {/* ========================= */}
+
+      {kycList.length === 0 ? (
+
+        <s-section accessibilityLabel="Empty state section">
+
+          <s-grid
+            gap="base"
+            justifyItems="center"
+            paddingBlock="large-400"
           >
 
-            <thead style={{ background: "#f6f6f7" }}>
-              <tr>
-                <th style={thStyle}>Order ID</th>
-                <th style={thStyle}>Status</th>
-                <th style={thStyle}>Submitted</th>
-                <th style={thStyle}>Front ID</th>
-                <th style={thStyle}>Back ID</th>
-                <th style={thStyle}>Selfie</th>
-              </tr>
-            </thead>
+            <s-box
+              maxInlineSize="200px"
+              maxBlockSize="200px"
+            >
+              <s-image
+                aspectRatio="1/0.5"
+                src="https://cdn.shopify.com/static/images/polaris/patterns/callout.png"
+                alt="KYC empty state illustration"
+              />
+            </s-box>
 
-            <tbody>
+            <s-grid
+              justifyItems="center"
+              maxInlineSize="450px"
+              gap="base"
+            >
 
-              {kycList.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    style={{
-                      padding: "40px",
-                      textAlign: "center",
-                    }}
-                  >
-                    No KYC submissions
-                  </td>
-                </tr>
-              ) : (
-                kycList.map((item) => (
-                  <tr key={item.id}>
+              <s-stack alignItems="center">
 
-                    <td style={tdStyle}>
+                <s-heading>
+                  No KYC submissions yet
+                </s-heading>
+
+                <s-paragraph>
+                  Start collecting customer identity
+                  verifications for Shopify orders.
+                </s-paragraph>
+
+              </s-stack>
+
+              <s-button-group>
+
+                <s-button
+                  slot="secondary-actions"
+                >
+                  Learn More
+                </s-button>
+
+                <s-button
+                  slot="primary-action"
+                >
+                  Create Verification
+                </s-button>
+
+              </s-button-group>
+
+            </s-grid>
+
+          </s-grid>
+
+        </s-section>
+
+      ) : (
+
+        <>
+          {/* ========================= */}
+          {/* Table */}
+          {/* ========================= */}
+
+          <s-section
+            padding="none"
+            accessibilityLabel="KYC table section"
+          >
+
+            <s-table>
+
+              <s-table-header-row>
+
+                <s-table-header listSlot="primary">
+                  Order ID
+                </s-table-header>
+
+                <s-table-header>
+                  Status
+                </s-table-header>
+
+                <s-table-header>
+                  Submitted
+                </s-table-header>
+
+                <s-table-header>
+                  Front ID
+                </s-table-header>
+
+                <s-table-header>
+                  Back ID
+                </s-table-header>
+
+                <s-table-header>
+                  Selfie
+                </s-table-header>
+
+              </s-table-header-row>
+
+              <s-table-body>
+
+                {kycList.map((item) => (
+
+                  <s-table-row key={item.id}>
+
+                    {/* Order ID */}
+                    <s-table-cell>
                       {item.orderIdentityId}
-                    </td>
+                    </s-table-cell>
 
-                    <td style={tdStyle}>
-                      <span style={badgeStyle(item.status)}>
+                    {/* Status */}
+                    <s-table-cell>
+
+                      <s-badge
+                        color="base"
+                        tone={
+                          item.status === "APPROVED"
+                            ? "success"
+                            : item.status === "REJECTED"
+                            ? "critical"
+                            : item.status === "UNDER_REVIEW"
+                            ? "warning"
+                            : "neutral"
+                        }
+                      >
                         {item.status}
-                      </span>
-                    </td>
+                      </s-badge>
 
-                    <td style={tdStyle}>
+                    </s-table-cell>
+
+                    {/* Submitted */}
+                    <s-table-cell>
                       {item.submittedAt
                         ? new Date(
                             item.submittedAt
                           ).toLocaleDateString()
                         : "-"}
-                    </td>
+                    </s-table-cell>
 
-                    <td style={tdStyle}>
+                    {/* Front ID */}
+                    <s-table-cell>
+
                       {item.documents?.frontImageUrl && (
-                        <img
-                          src={item.documents.frontImageUrl}
-                          alt="Front"
-                          width="80"
-                          style={{
-                            borderRadius: 8,
-                          }}
-                        />
-                      )}
-                    </td>
 
-                    <td style={tdStyle}>
+                        <s-clickable
+                          href={item.documents.frontImageUrl}
+                          target="_blank"
+                          border="base"
+                          borderRadius="base"
+                          overflow="hidden"
+                          inlineSize="80px"
+                          blockSize="80px"
+                        >
+
+                          <s-image
+                            objectFit="cover"
+                            alt="Front ID"
+                            src={item.documents.frontImageUrl}
+                          />
+
+                        </s-clickable>
+
+                      )}
+
+                    </s-table-cell>
+
+                    {/* Back ID */}
+                    <s-table-cell>
+
                       {item.documents?.backImageUrl && (
-                        <img
-                          src={item.documents.backImageUrl}
-                          alt="Back"
-                          width="80"
-                          style={{
-                            borderRadius: 8,
-                          }}
-                        />
-                      )}
-                    </td>
 
-                    <td style={tdStyle}>
+                        <s-clickable
+                          href={item.documents.backImageUrl}
+                          target="_blank"
+                          border="base"
+                          borderRadius="base"
+                          overflow="hidden"
+                          inlineSize="80px"
+                          blockSize="80px"
+                        >
+
+                          <s-image
+                            objectFit="cover"
+                            alt="Back ID"
+                            src={item.documents.backImageUrl}
+                          />
+
+                        </s-clickable>
+
+                      )}
+
+                    </s-table-cell>
+
+                    {/* Selfie */}
+                    <s-table-cell>
+
                       {item.documents?.selfieImageUrl && (
-                        <img
-                          src={item.documents.selfieImageUrl}
-                          alt="Selfie"
-                          width="80"
-                          style={{
-                            borderRadius: "50%",
-                          }}
-                        />
+
+                        <s-clickable
+                          href={item.documents.selfieImageUrl}
+                          target="_blank"
+                          border="base"
+                          borderRadius="full"
+                          overflow="hidden"
+                          inlineSize="80px"
+                          blockSize="80px"
+                        >
+
+                          <s-image
+                            objectFit="cover"
+                            alt="Selfie"
+                            src={item.documents.selfieImageUrl}
+                          />
+
+                        </s-clickable>
+
                       )}
-                    </td>
 
-                  </tr>
-                ))
-              )}
+                    </s-table-cell>
 
-            </tbody>
-          </table>
+                  </s-table-row>
 
-        </s-box>
-      </s-section>
+                ))}
+
+              </s-table-body>
+
+            </s-table>
+
+          </s-section>
+
+          {/* Footer Help */}
+
+          <s-stack
+            alignItems="center"
+            paddingBlock="large"
+          >
+
+            <s-text color="subdued">
+
+              Learn more about{" "}
+
+              <s-link
+                href="https://help.shopify.com"
+                target="_blank"
+              >
+                identity verification
+              </s-link>
+
+            </s-text>
+
+          </s-stack>
+
+        </>
+
+      )}
 
     </s-page>
   );
 }
-
-const thStyle = {
-  padding: "12px",
-  textAlign: "left",
-  borderBottom: "1px solid #ddd",
-  fontSize: "13px",
-  fontWeight: "600",
-};
-
-const tdStyle = {
-  padding: "12px",
-  borderBottom: "1px solid #f1f1f1",
-};
-
-const badgeStyle = (status) => {
-  const colors = {
-    PENDING: "#fff4e5",
-    UNDER_REVIEW: "#e3f1df",
-    APPROVED: "#d1fadf",
-    REJECTED: "#fdecea",
-  };
-
-  return {
-    padding: "6px 10px",
-    borderRadius: "6px",
-    fontSize: "12px",
-    background: colors[status] || "#eee",
-    fontWeight: "600",
-  };
-};
