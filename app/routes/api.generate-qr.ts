@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { authenticate, unauthenticated } from "../shopify.server";
+import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 import QRCode from "qrcode";
 import crypto from "crypto";
@@ -13,24 +13,30 @@ const headers = {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   await authenticate.public.customerAccount(request);
+
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 200, headers });
+    return new Response(null, {
+      status: 200,
+      headers,
+    });
   }
+
   return new Response("OK", { headers });
 }
 
 type QRRequestBody = {
-  orderId?: string;
   orderDetails?: string | null;
+  reason?: string;
 };
 
 export async function action({ request }: ActionFunctionArgs) {
-  try { 
-    const {sessionToken } = await authenticate.public.customerAccount(request);
+  try {
+    await authenticate.public.customerAccount(request);
+
     const body = (await request.json()) as QRRequestBody;
+
+    // Shopify Order Identity ID
     const orderIdentityId = body.orderDetails;
-    const token = crypto.randomUUID();
- /* code start*/
 
     if (!orderIdentityId) {
       return new Response(
@@ -45,19 +51,27 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
 
+    // Check if KYC already exists
     const existing = await prisma.kycVerification.findUnique({
       where: {
         orderIdentityId,
       },
     });
+
+    const url = new URL(request.url);
+
+    const protocol =
+      request.headers.get("x-forwarded-proto") ||
+      url.protocol.replace(":", "");
+
+    const appDomain = `${protocol}://${url.host}`;
+
+    // If already exists return same QR
     if (existing) {
-      const url = new URL(request.url);
-      const protocol =
-        request.headers.get("x-forwarded-proto") ||
-        url.protocol.replace(":", "");
-      const appDomain = `${protocol}://${url.host}`;
       const kycUrl = `${appDomain}/kyc?token=${existing.kycToken}`;
+
       const qrImage = await QRCode.toDataURL(kycUrl);
+
       return new Response(
         JSON.stringify({
           success: true,
@@ -65,6 +79,8 @@ export async function action({ request }: ActionFunctionArgs) {
           qrUrl: qrImage,
           token: existing.kycToken,
           redirectUrl: kycUrl,
+          status: existing.status,
+          kycStatus: existing.kycStatus,
         }),
         {
           headers: {
@@ -74,32 +90,37 @@ export async function action({ request }: ActionFunctionArgs) {
         }
       );
     }
+
+    // Generate new token
     const kycToken = crypto.randomUUID();
+
+    // Save in DB
     const kycRecord = await prisma.kycVerification.create({
       data: {
         orderIdentityId,
         kycToken,
         kycStatus: false,
         status: "PENDING",
-        reason: body.reason,
+        reason: body.reason || "checkout_kyc",
       },
     });
 
+    // Create KYC URL with token
+    const kycUrl = `${appDomain}/kyc?token=${kycRecord.kycToken}`;
 
-/* end code  */
-
-    const url = new URL(request.url);
-    const protocol =  request.headers.get("x-forwarded-proto") || url.protocol.replace(":", "");
-    const appDomain = `${protocol}://${url.host}`;
-    const kycUrl = `${appDomain}/kyc?token=${token}`;
+    // Generate QR Image
     const qrImage = await QRCode.toDataURL(kycUrl);
+
+    // Return response
     return new Response(
       JSON.stringify({
         success: true,
         qrUrl: qrImage,
-        dd:body,
-        token,
+        token: kycRecord.kycToken,
         redirectUrl: kycUrl,
+        status: "PENDING",
+        kycStatus: false,
+        orderIdentityId,
       }),
       {
         headers: {
@@ -109,6 +130,8 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     );
   } catch (err: unknown) {
+    console.error("KYC QR Error:", err);
+
     const message =
       err instanceof Error
         ? err.message
