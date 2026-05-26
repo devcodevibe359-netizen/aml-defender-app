@@ -1,4 +1,4 @@
-import Webcam from "react-webcam";
+//import Webcam from "react-webcam";
 import { useSearchParams } from "react-router";
 import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
@@ -52,7 +52,9 @@ const stepMeta: Record<StepKey, StepMeta> = {
 };
 
 export default function KycVerification(): JSX.Element {
-  const webcamRef = useRef<Webcam>(null);
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+ // const webcamRef = useRef<Webcam>(null);
   const frontInputRef = useRef<HTMLInputElement>(null);
   const backInputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<number>(0);
@@ -63,6 +65,8 @@ export default function KycVerification(): JSX.Element {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const currentStep: StepKey = STEPS[step];
+
+
   
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -76,7 +80,7 @@ export default function KycVerification(): JSX.Element {
   };
 
   const captureSelfie = (): void => {
-    const screenshot = webcamRef.current?.getScreenshot();
+    //const screenshot = webcamRef.current?.getScreenshot();
     if (screenshot) {
       setSelfie(screenshot);
       setSelfieMode(false);
@@ -84,11 +88,56 @@ export default function KycVerification(): JSX.Element {
   };
 
   const handleSubmit = async (): Promise<void> => {
-    if (!frontId || !backId || !selfie) return;
-    setSubmitting(true);
-    await new Promise<void>((r) => setTimeout(r, 2200));
-    setSubmitting(false);
-    setSubmitted(true);
+    try {
+      if (!frontId || !backId || !selfie || !token) {
+        alert("Missing required documents");
+        return;
+      }
+
+      setSubmitting(true);
+
+      const formData = new FormData();
+
+      formData.append("token", token);
+
+      formData.append("frontId", frontId.file);
+
+      formData.append("backId", backId.file);
+
+      // Convert base64 selfie → file
+      const selfieBlob = await fetch(selfie).then((r) => r.blob());
+
+      const selfieFile = new File(
+        [selfieBlob],
+        "selfie.jpg",
+        {
+          type: "image/jpeg",
+        }
+      );
+
+      formData.append("selfie", selfieFile);
+
+      const response = await fetch("/api/submit-kyc", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      console.log("KYC Response:", data);
+
+      if (!data.success) {
+        throw new Error(data.error || "Upload failed");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+
+      alert("Failed to submit KYC");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const canProceed = (): boolean => {
@@ -252,7 +301,7 @@ export default function KycVerification(): JSX.Element {
                 <div style={styles.webcamWrapper}>
                   <div style={styles.faceGuide} />
                   <Webcam
-                    ref={webcamRef}
+                    ref={/*webcamRef*/}
                     audio={false}
                     screenshotFormat="image/jpeg"
                     videoConstraints={{ facingMode: "user" }}
