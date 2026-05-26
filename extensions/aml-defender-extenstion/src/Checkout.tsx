@@ -62,7 +62,7 @@ function Extension() {
               </s-paragraph>
 
               <s-paragraph color="subdued">
-                Scan the QR code with your mobile phone and complete a quick identity check. Your order ships automatically once approved.
+               ghvghavsghdvghavsdvghasvdvghasvdvghasvdvasghvdvasghdvgvghasvghvasvghasvdasvghasvghdvas Scan the QR code with your mobile phone and complete a quick identity check. Your order ships automatically once approved.
               </s-paragraph>
 
               <s-divider />
