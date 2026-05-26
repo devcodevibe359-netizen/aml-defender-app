@@ -7,24 +7,16 @@ function Extension() {
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [content, setContent] = useState<string | null>(null);
-
-                  
-
   useEffect(() => {
     async function fetchQr() {
       try {
         setLoading(true);
         setError(null);
         const token = await shopify.sessionToken.get();
-        //const orderId = shopify.orderConfirmation.value?.id ?? null;
-        const orderNumber = shopify.orderConfirmation.value ?? null;
-         console.log("Order Number:", orderNumber);
-        
+        const orderNumber = shopify.orderConfirmation.value.order.id ?? null;
         const data = await QRgenerated({ token , orderNumber });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
-        setContent(orderNumber); 
       } catch (err) {
         console.error(err);
         setError('Failed to load QR code. Please try again.');
@@ -37,13 +29,10 @@ function Extension() {
 
   return (
     <s-section heading="Identity Verification Required">
-
-
       {/* ── Warning Banner — full width ── */}
       <s-grid gridTemplateColumns="repeat(12, 1fr)" gap="small">
         <s-grid-item gridColumn="span 12">
           <s-banner tone="warning">
-            Order: {content || "NO ORDER"}
             ⚠️ Your order is on hold — complete KYC verification to proceed.
           </s-banner>
         </s-grid-item>
