@@ -1,4 +1,4 @@
-//import Webcam from "react-webcam";
+import Webcam from "react-webcam";
 import { useSearchParams } from "react-router";
 import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
@@ -54,7 +54,7 @@ const stepMeta: Record<StepKey, StepMeta> = {
 export default function KycVerification(): JSX.Element {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
- // const webcamRef = useRef<Webcam>(null);
+  const webcamRef = useRef<Webcam>(null);
   const frontInputRef = useRef<HTMLInputElement>(null);
   const backInputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<number>(0);
@@ -80,7 +80,7 @@ export default function KycVerification(): JSX.Element {
   };
 
   const captureSelfie = (): void => {
-    //const screenshot = webcamRef.current?.getScreenshot();
+    const screenshot = webcamRef.current?.getScreenshot();
     if (screenshot) {
       setSelfie(screenshot);
       setSelfieMode(false);
@@ -301,7 +301,7 @@ export default function KycVerification(): JSX.Element {
                 <div style={styles.webcamWrapper}>
                   <div style={styles.faceGuide} />
                   <Webcam
-                    ref={/*webcamRef*/}
+                    ref={webcamRef}
                     audio={false}
                     screenshotFormat="image/jpeg"
                     videoConstraints={{ facingMode: "user" }}
