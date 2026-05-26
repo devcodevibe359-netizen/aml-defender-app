@@ -92,17 +92,14 @@ export default function KycDashboard() {
 
               </s-stack>
 
+              {/* ✅ Fix: Removed wrong slot attrs from buttons inside s-button-group */}
               <s-button-group>
 
-                <s-button
-                  slot="secondary-actions"
-                >
+                <s-button>
                   Learn More
                 </s-button>
 
-                <s-button
-                  slot="primary-action"
-                >
+                <s-button variant="primary">
                   Create Verification
                 </s-button>
 
@@ -130,27 +127,28 @@ export default function KycDashboard() {
 
               <s-table-header-row>
 
+                {/* ✅ Fix: Added listSlot to all headers for mobile list layout */}
                 <s-table-header listSlot="primary">
                   Order ID
                 </s-table-header>
 
-                <s-table-header>
+                <s-table-header listSlot="inline">
                   Status
                 </s-table-header>
 
-                <s-table-header>
+                <s-table-header listSlot="labeled">
                   Submitted
                 </s-table-header>
 
-                <s-table-header>
+                <s-table-header listSlot="labeled">
                   Front ID
                 </s-table-header>
 
-                <s-table-header>
+                <s-table-header listSlot="labeled">
                   Back ID
                 </s-table-header>
 
-                <s-table-header>
+                <s-table-header listSlot="labeled">
                   Selfie
                 </s-table-header>
 
@@ -168,10 +166,9 @@ export default function KycDashboard() {
                     </s-table-cell>
 
                     {/* Status */}
+                    {/* ✅ Fix: Removed invalid color="base" prop from s-badge */}
                     <s-table-cell>
-
                       <s-badge
-                        color="base"
                         tone={
                           item.status === "APPROVED"
                             ? "success"
@@ -184,7 +181,6 @@ export default function KycDashboard() {
                       >
                         {item.status}
                       </s-badge>
-
                     </s-table-cell>
 
                     {/* Submitted */}
@@ -294,7 +290,7 @@ export default function KycDashboard() {
             paddingBlock="large"
           >
 
-            <s-text color="subdued">
+            <s-text>
 
               Learn more about{" "}
 
