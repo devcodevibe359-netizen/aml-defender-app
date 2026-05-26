@@ -1,4 +1,5 @@
 import Webcam from "react-webcam";
+import { useSearchParams } from "react-router";
 import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
