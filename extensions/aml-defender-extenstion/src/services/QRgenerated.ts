@@ -1,4 +1,4 @@
-export const QRgenerated  = async ({ token , orderNumber}: { token: string ,  orderNumber: string | null; }) => {
+export const QRgenerated  = async ({ token , orderID}: { token: string ,  orderID: string | null; }) => {
   try {
     const res = await fetch(
       'https://aml-defender-app-production.up.railway.app/api/generate-qr',
@@ -10,7 +10,7 @@ export const QRgenerated  = async ({ token , orderNumber}: { token: string ,  or
         },
         body: JSON.stringify({
           reason: 'app_home_qr',
-          orderDetails: orderNumber
+          orderDetails: orderID
         }),
       }
     );

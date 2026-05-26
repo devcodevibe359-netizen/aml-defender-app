@@ -13,8 +13,8 @@ function Extension() {
         setLoading(true);
         setError(null);
         const token = await shopify.sessionToken.get();
-        const orderNumber = shopify.orderConfirmation.value.order.id ?? null;
-        const data = await QRgenerated({ token , orderNumber });
+        const orderID = shopify.orderConfirmation.value.order.id ?? null;
+        const data = await QRgenerated({ token , orderID });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
       } catch (err) {
