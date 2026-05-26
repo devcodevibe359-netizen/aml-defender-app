@@ -18,7 +18,7 @@ function Extension() {
         setError(null);
         const token = await shopify.sessionToken.get();
         //const orderId = shopify.orderConfirmation.value?.id ?? null;
-        const orderNumber = shopify.orderConfirmation.value?.number ?? null;
+        const orderNumber = shopify.orderConfirmation.value ?? null;
          console.log("Order Number:", orderNumber);
         
         const data = await QRgenerated({ token , orderNumber });
@@ -62,7 +62,7 @@ function Extension() {
               </s-paragraph>
 
               <s-paragraph color="subdued">
-               ghvghavsghdvghavsdvghasvdvghasvdvghasvdvasghvdvasghdvgvghasvghvasvghasvdasvghasvghdvas Scan the QR code with your mobile phone and complete a quick identity check. Your order ships automatically once approved.
+                Scan the QR code with your mobile phone and complete a quick identity check. Your order ships automatically once approved.
               </s-paragraph>
 
               <s-divider />
