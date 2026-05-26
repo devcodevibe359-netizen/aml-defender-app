@@ -11,6 +11,10 @@ function Extension() {
 
                   
 
+
+
+
+  
   useEffect(() => {
     async function fetchQr() {
       try {
@@ -20,6 +24,7 @@ function Extension() {
         //const orderId = shopify.orderConfirmation.value?.id ?? null;
         const orderNumber = shopify.orderConfirmation.value?.number ?? null;
 
+        
         const data = await QRgenerated({ token , orderNumber });
         console.log("this data is recvied ", data);
         setQrUrl(data.qrUrl);
@@ -36,6 +41,7 @@ function Extension() {
 
   return (
     <s-section heading="Identity Verification Required">
+      abcdefgh
       {content && (
         <s-text>
           {content} asdbhabdhbhjs
