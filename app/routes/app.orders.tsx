@@ -298,7 +298,7 @@ export default function KycDashboard() {
                 href="https://help.shopify.com"
                 target="_blank"
               >
-                identity verification
+                identity sdsd  verification
               </s-link>
 
             </s-text>
