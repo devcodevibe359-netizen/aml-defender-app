@@ -19,6 +19,6 @@ export async function uploadFileToRailway(file, prefix = "uploads") {
     })
   );
 
-  const imageUrl = `${process.env.RAILWAY_BUCKET_ENDPOINT_URL}/${BUCKET_NAME}/${fileName}`;
+  const imageUrl = `${process.env.ENDPOINT}/${BUCKET_NAME}/${fileName}`;
   return imageUrl;
 }
