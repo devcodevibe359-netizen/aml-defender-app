@@ -134,8 +134,8 @@ export default function KycVerification(): JSX.Element {
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-
-      alert("Failed to submit KYC");
+      alert("Error: " + JSON.stringify(err) + " | " + (err as Error).message);
+     // alert("Failed to submit KYC");
     } finally {
       setSubmitting(false);
     }
