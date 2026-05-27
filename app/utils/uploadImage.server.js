@@ -6,6 +6,7 @@ import path from "path";
 export async function uploadFileToRailway(file, prefix = "uploads") {
   const ext = path.extname(file.name) || ".jpg";
   const fileName = `${prefix}/${crypto.randomUUID()}${ext}`;
+
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
@@ -17,6 +18,7 @@ export async function uploadFileToRailway(file, prefix = "uploads") {
       ContentType: file.type || "image/jpeg",
     })
   );
+
   const imageUrl = `${process.env.RAILWAY_BUCKET_ENDPOINT_URL}/${BUCKET_NAME}/${fileName}`;
   return imageUrl;
 }
