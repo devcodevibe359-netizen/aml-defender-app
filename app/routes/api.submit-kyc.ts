@@ -2,9 +2,12 @@ import type { ActionFunctionArgs } from "react-router";
 
 import prisma from "../db.server";
 
-import fs from "fs/promises";
+// import fs from "fs/promises";
 
-import path from "path";
+// import path from "path";
+
+
+import { uploadFileToRailway } from "../utils/uploadImage.server";
 
 export async function action({
   request,
@@ -22,7 +25,7 @@ export async function action({
 
     if (!token || !frontId || !backId || !selfie) {
       return Response.json(
-        {
+        {  
           success: false,
           error: "Missing required data",
         },
@@ -50,7 +53,7 @@ export async function action({
         }
       );
     }
-
+/*
     // Upload folder
     const uploadDir = path.join(
       process.cwd(),
@@ -81,7 +84,9 @@ export async function action({
       return `/uploads/${filename}`;
     }
 
-    // Save images
+    */
+
+/*
     const frontImageUrl = await saveFile(
       frontId,
       "front"
@@ -96,6 +101,19 @@ export async function action({
       selfie,
       "selfie"
     );
+*/
+
+
+
+
+const frontImageUrl = await uploadFileToRailway(frontId, "front");
+const backImageUrl = await uploadFileToRailway(backId, "back");
+const selfieImageUrl = await uploadFileToRailway(selfie, "selfie");
+
+
+
+
+
 
     // Save documents table
     await prisma.kycDocument.create({
