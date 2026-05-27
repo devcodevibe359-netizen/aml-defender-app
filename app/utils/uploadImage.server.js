@@ -1,5 +1,6 @@
 // app/utils/uploadImage.server.js
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3, BUCKET_NAME } from "./storage.server";
 import path from "path";
 
@@ -10,6 +11,7 @@ export async function uploadFileToRailway(file, prefix = "uploads") {
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
+  // Upload karo
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET_NAME,
@@ -19,6 +21,15 @@ export async function uploadFileToRailway(file, prefix = "uploads") {
     })
   );
 
-  const imageUrl = `${process.env.ENDPOINT}/${BUCKET_NAME}/${fileName}`;
-  return imageUrl;
+  // ✅ Presigned URL banao — 7 din valid
+  const getCommand = new GetObjectCommand({
+    Bucket: BUCKET_NAME,
+    Key: fileName,
+  });
+
+  const signedUrl = await getSignedUrl(s3, getCommand, {
+    expiresIn: 60 * 60 * 24 * 7, // 7 din
+  });
+
+  return signedUrl;
 }
