@@ -15,6 +15,7 @@ export async function action({
   try {
     const formData = await request.formData();
 
+    
     const token = formData.get("token") as string;
 
     const frontId = formData.get("frontId") as File;
