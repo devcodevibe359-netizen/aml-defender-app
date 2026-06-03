@@ -2,7 +2,7 @@
 
 client_id = "386dd3c21d08cd3ac3b9db05c5a9bfb4"
 name = "aml-defender-app"
-application_url = "http://nanonosh.in"
+application_url = "https://nanonosh.in"
 embedded = true
 
 [build]
@@ -21,10 +21,10 @@ api_version = "2026-07"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_metaobjects,write_metaobject_definitions"
+scopes = "write_metaobject_definitions,write_metaobjects,write_products"
 
 [auth]
-redirect_urls = [ "http://nanonosh.in/api/auth" ]
+redirect_urls = [ "https://nanonosh.in/api/auth" ]
 
 [product.metafields.app.demo_info]
 type = "single_line_text_field"
