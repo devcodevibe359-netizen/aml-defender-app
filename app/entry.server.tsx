@@ -8,6 +8,7 @@ import { addDocumentResponseHeaders } from "./shopify.server";
 
 export const streamTimeout = 5000;
 
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
